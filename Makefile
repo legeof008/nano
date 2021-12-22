@@ -1,6 +1,6 @@
 CC=gcc
 INC_DIR = ../
-OBJECTS= *.c
+OBJECTS= nano.c
 CFLAGS= -fcommon -lncurses
 NAME=nano
 GoL: $(OBJECTS)
