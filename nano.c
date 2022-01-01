@@ -1,42 +1,68 @@
-#include<stdio.h>
-#include<ncurses.h>
-#include<stdlib.h>
+/*Author: Maciej Michalski
+  git: legeof008 */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "nano.h"
 
-int main(int argc, char** argv)
+t_panel init_t_panel(int x, int y, char *filename)
 {
-	char* ch = malloc(sizeof(ch)*5);
-	char ck;
-	int current_row,current_col;
-	int col,row;
+    t_panel output;
+    output.filename = filename;
+    output.program_name = PROGRAM_NAME_DEFAULT;
+    output.version = CURRENT_VERSION_DEFAULT;
+    output.x = x;
+    output.y = y;
+    output.status = TRUE;
+    return output;
+}
+b_panel init_b_panel()
+{
+    b_panel output;
+    return output;
+}
+void print_t_panel(t_panel panel, bool flag)
+{
 
-	initscr(); /* Start curses mode */
-	getmaxyx(stdscr,row,col);
-	cbreak(); /* Turning off line buffering */
-	keypad(stdscr,TRUE);
-	noecho(); /*letters dont repeat*/
+    int i, j;
+    int x, y;
+    char* filename;
+    char* program_name;
+    char* version;
+    
+    filename = panel.filename;
+    program_name = panel.program_name;
+    version = panel.version;
+    x = panel.x;
+    y = panel.y;
 
-	printw("Wpisz dowolny ciag znakow do prompta\n");
-	current_row=1;
-	current_col=0;
-	while(ck != KEY_ENTER)
-	{
-		ck = getch();
-		*(ch+current_col) = ck;
-		current_col++;
-		mvprintw(current_row,current_col,(ch+current_col-1));
-		refresh();
-		if(ck == KEY_ENTER)
-		{
-			current_row++;
-		}
-		mvprintw(row-2,0,"This screen has %d rows and %d columns, number of characters is: %d\n",row,col,current_col);
-		move(current_row,current_col+1);
-	}
-	printw("Przerwano prace");
+    int l,m;
 
-	refresh();
-	getch();
-	endwin();
+    if (flag == TRUE)
+    {
+        attron(A_STANDOUT);
+        //dodajemy nazwę programu plus wersję
+        l = strlen(program_name);
+        m = strlen(filename);
+        mvprintw(0,0,program_name);
+        mvaddch(0,l,' ');
+        mvprintw(0,l+1,version);
+        mvaddch(0,l+4,' ');
+        for(i = l + 4 ; i < x/2; ++i)
+            mvaddch(y,i,' ');
+        mvprintw(y,i,filename);
+        for(j = i+m; j< x-9; j++)
+            mvaddch(y,j,' ');
+        if(panel.status)
+            mvprintw(y,j,"MODIFIED ");
+        else
+            mvprintw(y,j,"         ");
+        mvaddch(y,j+9,' ');
 
-	return 0;
+        attroff(A_STANDOUT);
+        move(1,0);
+        /*m = strlen(version);
+        mvprintw(y,i,version);*/
+        refresh();
+    }
 }
