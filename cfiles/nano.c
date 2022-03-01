@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "nano.h"
+#include "../hfiles/nano.h"
 
 t_panel init_t_panel(int width, char *filename)
 {

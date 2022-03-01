@@ -2,7 +2,7 @@
   git: legeof008 */
 #include <ncurses.h>
 #include <stdio.h>
-#include "nano.h"
+#include "../hfiles/nano.h"
 
 int main(int argc, char **argv)
 {
