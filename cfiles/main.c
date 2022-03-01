@@ -1,15 +1,31 @@
 /*Author: Maciej Michalski
   git: legeof008 */
-#include <ncurses.h>
-#include <stdio.h>
 #include "../hfiles/nano.h"
 
 int main(int argc, char **argv)
 {
+  if (argc <= 1)
+  {
+    printf("nano : No file name given, please specify filename !");
+    exit(EXIT_FAILURE);
+  }
+  else if (argc > 2)
+  {
+    printf("nano : Too many elements. Specify single filename !");
+    exit(EXIT_FAILURE);
+  }
+
+  bool modified_flag = TRUE;
+  /* zmieniona jeśli został stworzony nowy plik lub zmodyfikowany istniejący*/
   int row, col;
+  /* wiersze i kolumny okna*/
+  int linecounter = CURSOR_Y_DEFAULT_VAL;
+  /* licznik wypisywanych linii*/
   int ch;
-  int currx = 0;
-  int curry = 1;
+  /*zmienna pomocnicza przy wyczytywania klawiszy wejściowych*/
+  int currx = CURSOR_X_DEFAULT_VAL;
+  /*początkowa zmienna kursora w x oraz niżej w y*/
+  int curry = CURSOR_Y_DEFAULT_VAL;
 
   initscr();
   start_color();
@@ -21,53 +37,30 @@ int main(int argc, char **argv)
   keypad(stdscr, TRUE);
   noecho();
   refresh();
-  // graphical setup
-  print_t_panel(&top, TRUE);
-  move(1, 0);
 
+  /* wypisanie na ekran linii */
+  if (check_if_file_exists(argv[1]) == 0)
+  {
+    modified_flag = FALSE;
+  }
+  print_t_panel(&top, modified_flag);
+  read_lines_from_file(argv[1], &linecounter, &workspace);
+  wmove(workspace.w_window, curry, currx);
+  wrefresh(workspace.w_window);
+  /* główna pętla programu */
   while ((ch = getch()) != KEY_F(1))
   {
-    switch (ch)
-    {
-    case KEY_LEFT:
-      if (currx > 0)
-      {
-        currx--;
-      }
-      else
-      {
-        currx = col - 1;
-      }
-      print_t_panel(&top, TRUE);
-      refresh_w_panel(&workspace, currx, curry);
-      break;
-    case KEY_RIGHT:
-      if (currx < col - 1)
-      {
-        currx++;
-      }
-      else
-      {
-        currx = 0;
-      }
-      print_t_panel(&top, TRUE);
-      refresh_w_panel(&workspace, currx, curry);
-      break;
-    case KEY_UP:
-      if (curry > 1)
-        curry--;
-      print_t_panel(&top, TRUE);
-      refresh_w_panel(&workspace, currx, curry);
-      break;
-    case KEY_DOWN:
-      if (curry < row)
-        curry++;
-      print_t_panel(&top, TRUE);
-      refresh_w_panel(&workspace, currx, curry);
-      break;
-    }
+    print_t_panel(&top, modified_flag);
+    change_cursor_position(ch, &currx, &curry, col, row, &workspace);
+    read_lines_from_file(argv[1], &linecounter, &workspace);
+    wmove(workspace.w_window, curry, currx);
+    wrefresh(workspace.w_window);
+    // print_t_panel(&top, modified_flag);
+    // refresh_w_panel(&workspace, currx, curry);
   }
+  delwin(workspace.w_window);
+  delwin(top.window);
   endwin();
 
-  return 0;
+  exit(EXIT_SUCCESS);
 }
