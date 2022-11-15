@@ -7,6 +7,6 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@ve
+    - uses: actions/checkout@3
     - name: getup
        run: make
