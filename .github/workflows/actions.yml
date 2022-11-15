@@ -3,7 +3,7 @@ name: actions
 on:
 
   pull_request:
-    banches: [ "master" ]
+    banches: [ "main" ]
 
   workflow_dispatch:
 
