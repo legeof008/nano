@@ -23,4 +23,7 @@ jobs:
       with:
         name: binarka
         path: ./nano
+    - name: Simple Version
+      uses: xom9ikk/version-by-tag@v1
+
 
