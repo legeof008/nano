@@ -1,8 +1,8 @@
 CC=gcc
 INC_DIR = ofiles
-OBJECTS= nano.c main.c
-OOBJECTS = nano.o main.o
-CFLAGS= -fcommon -lncurses -Wall -pedantic
+OBJECTS= main.c
+OOBJECTS =main.o
+CFLAGS= -fcommon
 NAME=nano
 Nano: $(OBJECTS)
 	$(CC) $(CFLAGS) -c $(OBJECTS)
