@@ -9,7 +9,25 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: |
-    make
-  displayName: 'make'
+stages:
+  - stage: CI
+    displayName: CI Stage
+    jobs: 
+      - job: build
+        displayName: Build
+        steps:
+          - script: |
+              make nano
+            displayName: 'make'
+  - stage: CD
+    displayName: CD stage
+    jobs:
+      - deployment: deploy
+        displayName: Deploy
+        environment: Production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo This is a deployment job
+                  displayName: 'Deploy binary'
